@@ -13,7 +13,8 @@ class BucketListEndpointTestcase(unittest.TestCase):
         db.create_all()
 
     def test_bucket_list_creation_endpoint(self):
-        response = self.client().post('/bucketlist/',data=self.bucketlist,content_type="application/json")
+        response = self.client().post('/bucketlist/',data=self.bucketlist,
+                                        content_type="application/json")
         self.assertEqual(response.status_code,201)
 
 

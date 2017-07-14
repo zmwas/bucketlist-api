@@ -1,5 +1,4 @@
 import unittest
-from sqlalchemy.exc import IntegrityError
 from app import create_app,db
 from app.bucketlists.models import BucketList
 from app.bucketlists.controller import create_bucket_list
