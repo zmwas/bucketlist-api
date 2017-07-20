@@ -41,6 +41,17 @@ class BucketListTestCase(unittest.TestCase):
 
         self.assertEqual(get_single_bucketlist(2),"Bucketlist doesn't exist")
 
+    def test_delete_single_bucket_list(self):
+        create_bucket_list(self.bucket_list)
+        delete_bucket_list(1)
+        all_bucket_lists = BucketList.query.all()
+
+        self.assertEqual(len(all_bucket_lists),0)
+
+    def test_delete_non_existent_bucket_list(self):
+        create_bucket_list(self.bucket_list)
+
+        self.assertEqual(delete_bucket_list(2),"Bucketlist doesn't exist")
 
 
     def tearDown(self):

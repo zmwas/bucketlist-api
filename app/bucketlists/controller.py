@@ -18,3 +18,10 @@ def get_single_bucketlist(id):
     if bucketlist == None:
         return "Bucketlist doesn't exist"
     return bucketlist
+
+def delete_bucket_list(id):
+    bucketlist = BucketList.query.get(id)
+    if bucketlist == None:
+        return "Bucketlist doesn't exist"
+    db.session.delete(bucketlist)
+    db.session.commit()

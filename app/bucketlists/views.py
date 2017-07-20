@@ -38,3 +38,6 @@ class SingleBucketListResource(Resource):
             raise NotFound("Bucketlist doesn't exist")
 
         return get_single_bucketlist(id)
+
+    def delete(self,id):
+        return delete_bucket_list(id), 200

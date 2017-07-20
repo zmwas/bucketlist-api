@@ -36,7 +36,14 @@ class BucketListEndpointTestcase(unittest.TestCase):
         response = self.client().get('/bucketlist/19')
         self.assertIn('{"message": "Bucketlist doesn\'t exist"}',response.data)
 
+    def test_delete_single_bucket_list_endpoint(self):
+        self.client().post('/bucketlist/',data=self.bucketlist,
+                                                content_type="application/json")
+        response = self.client().delete('/bucketlist/1')
 
+        self.assertEqual(response.status_code,200)
+        response = self.client().get('/bucketlist/1')
+        self.assertIn('{"message": "Bucketlist doesn\'t exist"}',response.data)
 
 
 

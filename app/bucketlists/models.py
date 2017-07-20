@@ -2,7 +2,6 @@ from app import db
 
 
 
-
 class BucketList(db.Model):
     __tablename__ = "bucketlists"
 
