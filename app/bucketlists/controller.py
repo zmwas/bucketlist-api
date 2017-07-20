@@ -8,3 +8,6 @@ def create_bucket_list(data):
     bucketlist = BucketList(title=title,description=description)
     db.session.add(bucketlist)
     db.session.commit()
+
+def get_all_bucketlists():
+    return BucketList.query.all()
