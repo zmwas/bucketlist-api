@@ -26,6 +26,8 @@ class BucketListTestCase(unittest.TestCase):
         all_bucket_lists = BucketList.query.all()
         self.assertEqual(get_all_bucketlists(),all_bucket_lists)
 
+        
+
 
 
 

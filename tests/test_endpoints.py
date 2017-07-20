@@ -18,6 +18,13 @@ class BucketListEndpointTestcase(unittest.TestCase):
         self.assertEqual(response.status_code,201)
 
 
+    def test_all_bucket_list_end_point(self):
+        response = self.client().post('/bucketlist/',data=self.bucketlist,
+                                                content_type="application/json")
+        self.assertEqual(response.status_code,201)
+        response = self.client().get('/bucketlist/')
+        self.assertEqual(response.status_code,200)
+
 
 
 

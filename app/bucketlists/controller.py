@@ -11,3 +11,5 @@ def create_bucket_list(data):
 
 def get_all_bucketlists():
     return BucketList.query.all()
+
+    
