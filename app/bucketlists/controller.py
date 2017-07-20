@@ -12,4 +12,9 @@ def create_bucket_list(data):
 def get_all_bucketlists():
     return BucketList.query.all()
 
-    
+def get_single_bucketlist(id):
+
+    bucketlist = BucketList.query.filter_by(id=id).first()
+    if bucketlist == None:
+        return "Bucketlist doesn't exist"
+    return bucketlist
