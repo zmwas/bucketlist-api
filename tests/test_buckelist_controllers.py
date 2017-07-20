@@ -2,10 +2,10 @@ import unittest
 from app import create_app, db
 from app.bucketlists.models import BucketList
 from app.bucketlists.controller import (create_bucket_list, get_all_bucketlists,
-                                        get_single_bucketlist, delete_bucket_list
+                                        get_single_bucketlist,
+                                        delete_bucket_list,update_bucket_list
                                         )
 from config import app_config
-print("this is the config", app_config)
 
 class BucketListTestCase(unittest.TestCase):
 
@@ -52,6 +52,10 @@ class BucketListTestCase(unittest.TestCase):
         create_bucket_list(self.bucket_list)
 
         self.assertEqual(delete_bucket_list(2),"Bucketlist doesn't exist")
+
+    def test_update_bucketlist(self):
+        create_bucket_list(self.bucket_list)
+        self.assertEqual()
 
 
     def tearDown(self):
