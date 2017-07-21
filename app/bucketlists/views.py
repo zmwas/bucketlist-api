@@ -6,7 +6,7 @@ from app.utils import api
 
 from serializers import bucketlist
 from controller import (create_bucket_list,get_all_bucketlists,
-                       get_single_bucketlist,delete_bucket_list)
+                       get_single_bucketlist,delete_bucket_list,update_bucket_list)
 
 namespace = api.namespace('bucketlist',description='BucketList operations')
 
@@ -44,3 +44,10 @@ class SingleBucketListResource(Resource):
             raise NotFound("Bucketlist doesn't exist")
 
         return delete_bucket_list(id), 200
+
+    @api.expect(bucketlist)
+    def put(self,id):
+        if get_single_bucketlist(id) == "Bucketlist doesn't exist":
+            raise NotFound("Bucketlist doesn't exist")
+        update_bucket_list
+        return 200

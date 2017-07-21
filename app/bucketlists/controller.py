@@ -8,6 +8,7 @@ def create_bucket_list(data):
     bucketlist = BucketList(title=title,description=description)
     db.session.add(bucketlist)
     db.session.commit()
+    return bucketlist
 
 def get_all_bucketlists():
     return BucketList.query.all()
@@ -25,3 +26,13 @@ def delete_bucket_list(id):
         return "Bucketlist doesn't exist"
     db.session.delete(bucketlist)
     db.session.commit()
+
+def update_bucket_list(id,data):
+    title = data.get('title')
+    description = data.get('description')
+    bucketlist = BucketList.query.get(id)
+    bucketlist.title = title
+    bucketlist.description = description
+    db.session.add(bucketlist)
+    db.session.commit()
+    return bucketlist
