@@ -3,7 +3,7 @@ from app import create_app, db
 from app.bucketlists.models import BucketList
 from app.bucketlists.controller import (create_bucket_list, get_all_bucketlists,
                                         get_single_bucketlist,
-                                        delete_bucket_list
+                                        delete_bucket_list,update_bucket_list
                                         )
 from config import app_config
 
@@ -11,7 +11,6 @@ class BucketListTestCase(unittest.TestCase):
 
     def setUp(self):
         self.app = create_app("testing")
-        self.app.config.from_object(app_config["testing"])
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.bucket_list = {"title":"Road Trip", "description":"Stuff to do on my road trip"}
@@ -37,7 +36,6 @@ class BucketListTestCase(unittest.TestCase):
 
     def test_get_single_bucket_list_with_nonexistent_id(self):
         create_bucket_list(self.bucket_list)
-        single_bucket_list = BucketList.query.get(2)
 
         self.assertEqual(get_single_bucketlist(2),"Bucketlist doesn't exist")
 
@@ -52,6 +50,16 @@ class BucketListTestCase(unittest.TestCase):
         create_bucket_list(self.bucket_list)
 
         self.assertEqual(delete_bucket_list(2),"Bucketlist doesn't exist")
+
+    def test_update_bucketlist(self):
+        create_bucket_list(self.bucket_list)
+        data = {"title":"2017", "description":"Stuff to do in 2017"}
+
+        update_bucket_list(1,data)
+        new_bucket_list_title =BucketList.query.get(1).title
+
+        self.assertEqual(new_bucket_list_title,"2017")
+
 
 
 
