@@ -4,7 +4,10 @@ from app.bucketlists.models import BucketList,BucketListItem
 from app.bucketlists.controller import (create_bucket_list, get_all_bucketlists,
                                         get_single_bucketlist,
                                         delete_bucket_list,update_bucket_list,
-                                        create_bucket_list_item
+                                        create_bucket_list_item,
+                                        update_bucket_list_item,
+                                        delete_bucket_list_items
+
                                         )
 from config import app_config
 
@@ -68,6 +71,26 @@ class BucketListTestCase(unittest.TestCase):
         queried_item = BucketListItem.query.first()
         self.assertIsNotNone(queried_item)
         self.assertTrue(queried_item)
+
+    def test_update_bucketlist_item(self):
+        create_bucket_list(self.bucket_list)
+        create_bucket_list_item(self.bucket_list_item)
+        data = {"name":"Go to Mara"}
+        update_bucket_list_item(1,1,data)
+        new_bucket_list_item_name = BucketListItem.query.get(1).name
+
+        self.assertEqual(new_bucket_list_item_name,"Go to Mara")
+
+    def test_delete_single_bucket_list_item(self):
+        create_bucket_list(self.bucket_list)
+        create_bucket_list_item(self.bucket_list_item)
+        delete_bucket_list_items(1,1)
+        all_bucket_list_item = BucketListItem.query.all()
+        self.assertEqual(len(all_bucket_list_item),0)
+
+
+
+
 
 
 

@@ -68,10 +68,18 @@ class BucketListEndpointTestcase(unittest.TestCase):
 
     def test_bucket_list_item_creation_endpoint(self):
         self.client.post('/bucketlist/',data=self.bucketlist,
-                                                content_type="application/json")
-        response = self.client.post('/bucketlist/1/items',data=self.bucket_list_item,
+                                            content_type="application/json")
+        response = self.client.post('/bucketlist/1/items',
+                                    data=self.bucket_list_item,
                                     content_type="application/json")
         self.assertEqual(response.status_code,200)
+
+    def test_item_creation_with_non_existent_bucketlist_id_returns_404(self):
+        response = self.client.post('/bucketlist/1/items',
+                                    data=self.bucket_list_item,
+                                    content_type="application/json")
+        self.assertEqual(response.status_code,404)
+
 
     def test_update_single_bucketlist_item_endpoint(self):
         self.client.post('/bucketlist/',data=self.bucketlist,
@@ -82,9 +90,34 @@ class BucketListEndpointTestcase(unittest.TestCase):
         response=self.client.put('/bucketlist/1/items/1',data=data,
                                     content_type="application/json")
         self.assertEqual(response.status_code,200)
+    def test_update_item_with_non_existent_bucketlist_item_id_returns_404(self):
+        data = '{"name":"Finish watching Fairy Tail"}'
+        response=self.client.put('/bucketlist/1/items/76',data=data,
+                                    content_type="application/json")
+        self.assertEqual(response.status_code,404)
+    def test_update_item_with_non_existent_bucketlist_id_returns_404(self):
+        data = '{"name":"Finish watching Fairy Tail"}'
+        response=self.client.put('/bucketlist/1/items/76',data=data,
+                                    content_type="application/json")
+        self.assertEqual(response.status_code,404)
 
 
-    
+    def test_delete_single_bucket_list_item_endpoint(self):
+        self.client.post('/bucketlist/',data=self.bucketlist,
+                                                content_type="application/json")
+        self.client.post('/bucketlist/1/items',data=self.bucket_list_item,
+                                    content_type="application/json")
+        response = self.client.delete('/bucketlist/1/items/1')
+        self.assertEqual(response.status_code,200)
+
+    def test_delete_item_with_non_existent_bucketlist_item_id_returns_404(self):
+        response = self.client.delete('/bucketlist/1/items/1')
+        self.assertEqual(response.status_code,404)
+
+    def test_delete_item_with_non_existent_bucketlist_id_returns_404(self):
+        response = self.client.delete('/bucketlist/1/items/1')
+        self.assertEqual(response.status_code,404)
+
 
 
 
