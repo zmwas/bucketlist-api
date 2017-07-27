@@ -59,7 +59,7 @@ class BucketListItemsResource(Resource):
         data = request.get_json(force = True)
         if get_single_bucketlist(id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
-        create_bucket_list_item(data)
+        create_bucket_list_item(data,id)
         return 200
 
 

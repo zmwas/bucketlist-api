@@ -11,7 +11,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
         self.app_context.push()
         self.client = self.app.test_client()
         self.bucketlist = '{"title":"2018","description":"Stuff to do in 2018"}'
-        self.bucket_list_item = '{"name":"Finish watching One Pice","bucketlist_id":1}'
+        self.bucket_list_item = '{"name":"Finish watching One Piece"}'
         db.create_all()
 
     def test_bucket_list_creation_endpoint(self):

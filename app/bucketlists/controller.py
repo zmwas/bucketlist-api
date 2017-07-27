@@ -39,9 +39,8 @@ def update_bucket_list(id,data):
     return bucketlist
 
 
-def create_bucket_list_item(data):
+def create_bucket_list_item(data,bucketlist_id):
     name = data.get('name')
-    bucketlist_id = data.get('bucketlist_id')
     item = BucketListItem(name=name)
     bucket_list = BucketList.query.filter_by(id=bucketlist_id).first()
     bucket_list.bucketlistitems.append(item)
