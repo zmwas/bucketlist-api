@@ -18,7 +18,11 @@ class BucketListTestCase(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.bucket_list = {"title":"Road Trip", "description":"Stuff to do on my road trip"}
+<<<<<<< HEAD
         self.bucket_list_item = {"name":"Go to Mombasa","bucketlist_id":1}
+=======
+        self.bucket_list_item = {"name":"Go to Mombasa"}
+>>>>>>> ft-bucketlist-items
 
         db.create_all()
 
@@ -67,14 +71,15 @@ class BucketListTestCase(unittest.TestCase):
 
     def test_create_bucket_list_item(self):
         create_bucket_list(self.bucket_list)
-        create_bucket_list_item(self.bucket_list_item)
+
+        create_bucket_list_item(self.bucket_list_item,1)
         queried_item = BucketListItem.query.first()
         self.assertIsNotNone(queried_item)
         self.assertTrue(queried_item)
 
     def test_update_bucketlist_item(self):
         create_bucket_list(self.bucket_list)
-        create_bucket_list_item(self.bucket_list_item)
+        create_bucket_list_item(self.bucket_list_item,1)
         data = {"name":"Go to Mara"}
         update_bucket_list_item(1,1,data)
         new_bucket_list_item_name = BucketListItem.query.get(1).name
@@ -83,7 +88,7 @@ class BucketListTestCase(unittest.TestCase):
 
     def test_delete_single_bucket_list_item(self):
         create_bucket_list(self.bucket_list)
-        create_bucket_list_item(self.bucket_list_item)
+        create_bucket_list_item(self.bucket_list_item,1)
         delete_bucket_list_items(1,1)
         all_bucket_list_item = BucketListItem.query.all()
         self.assertEqual(len(all_bucket_list_item),0)
