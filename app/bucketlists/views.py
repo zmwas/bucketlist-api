@@ -7,8 +7,9 @@ from app.utils import api
 from serializers import bucketlist,bucketlist_item
 from controller import (create_bucket_list,get_all_bucketlists,
                        get_single_bucketlist,delete_bucket_list,
+                       get_single_bucketlist_item,
                        update_bucket_list,create_bucket_list_item,
-                       update_bucket_list_item)
+                       update_bucket_list_item,delete_bucket_list_items)
 
 namespace = api.namespace('bucketlist',description='BucketList operations')
 
@@ -60,6 +61,8 @@ class BucketListItemsResource(Resource):
     @api.expect(bucketlist_item)
     def post(self,id):
         data = request.get_json(force = True)
+        if get_single_bucketlist(id) == "Bucketlist doesn't exist":
+            raise NotFound("Bucketlist doesn't exist")
         create_bucket_list_item(data)
         return 200
 
@@ -70,5 +73,12 @@ class BucketListItemsResource(Resource):
     @api.expect(bucketlist_item)
     def put(self,id,item_id):
         data = request.get_json(force = True)
+        if get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
+            raise NotFound("Item does not exist")
         update_bucket_list_item(id,item_id,data)
         return 200
+
+    def delete(self,id,item_id):
+        if get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
+            raise NotFound("Item does not exist")
+        return delete_bucket_list_items(id,item_id),200
