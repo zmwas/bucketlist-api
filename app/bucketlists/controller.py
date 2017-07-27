@@ -1,5 +1,5 @@
 from app import db
-from models import BucketList
+from models import BucketList,BucketListItem
 
 
 def create_bucket_list(data):
@@ -8,7 +8,6 @@ def create_bucket_list(data):
     bucketlist = BucketList(title=title,description=description)
     db.session.add(bucketlist)
     db.session.commit()
-    return bucketlist
 
 def get_all_bucketlists():
     return BucketList.query.all()
@@ -36,3 +35,12 @@ def update_bucket_list(id,data):
     db.session.add(bucketlist)
     db.session.commit()
     return bucketlist
+
+def create_bucket_list_item(data):
+    name = data.get('name')
+    bucketlist_id = data.get('bucketlist_id')
+    item = BucketListItem(name=name)
+    bucket_list = BucketList.query.filter_by(id=bucketlist_id).first()
+    bucket_list.bucketlistitems.append(item)
+    db.session.add(item)
+    db.session.commit()
