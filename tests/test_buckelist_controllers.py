@@ -1,9 +1,10 @@
 import unittest
 from app import create_app, db
-from app.bucketlists.models import BucketList
+from app.bucketlists.models import BucketList,BucketListItem
 from app.bucketlists.controller import (create_bucket_list, get_all_bucketlists,
                                         get_single_bucketlist,
-                                        delete_bucket_list,update_bucket_list
+                                        delete_bucket_list,update_bucket_list,
+                                        create_bucket_list_item
                                         )
 from config import app_config
 
@@ -14,6 +15,7 @@ class BucketListTestCase(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.bucket_list = {"title":"Road Trip", "description":"Stuff to do on my road trip"}
+        self.bucket_list_item = {"name":"Go to Mombasa","bucketlist_id":1}
 
         db.create_all()
 
@@ -59,6 +61,14 @@ class BucketListTestCase(unittest.TestCase):
         new_bucket_list_title =BucketList.query.get(1).title
 
         self.assertEqual(new_bucket_list_title,"2017")
+
+    def test_create_bucket_list_item(self):
+        create_bucket_list(self.bucket_list)
+        create_bucket_list_item(self.bucket_list_item)
+        queried_item = BucketListItem.query.first()
+        self.assertIsNotNone(queried_item)
+        self.assertTrue(queried_item)
+
 
 
 
