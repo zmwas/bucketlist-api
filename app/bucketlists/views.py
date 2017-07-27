@@ -20,8 +20,6 @@ class BucketListResource(Resource):
     def get(self):
         return get_all_bucketlists()
 
-
-
     @api.expect(bucketlist)
     def post(self):
         """
@@ -39,13 +37,11 @@ class SingleBucketListResource(Resource):
     def get(self,id):
         if get_single_bucketlist(id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
-
         return get_single_bucketlist(id)
 
     def delete(self,id):
         if get_single_bucketlist(id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
-
         return delete_bucket_list(id), 200
 
     @api.expect(bucketlist)
@@ -73,12 +69,16 @@ class BucketListItemsResource(Resource):
     @api.expect(bucketlist_item)
     def put(self,id,item_id):
         data = request.get_json(force = True)
-        if get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
+        if get_single_bucketlist(id) == "Bucketlist doesn't exist":
+            raise NotFound("Bucketlist doesn't exist")
+        elif get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
             raise NotFound("Item does not exist")
         update_bucket_list_item(id,item_id,data)
         return 200
 
     def delete(self,id,item_id):
-        if get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
+        if get_single_bucketlist(id) == "Bucketlist doesn't exist":
+            raise NotFound("Bucketlist doesn't exist")
+        elif get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
             raise NotFound("Item does not exist")
         return delete_bucket_list_items(id,item_id),200
