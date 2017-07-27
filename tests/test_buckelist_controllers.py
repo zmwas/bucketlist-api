@@ -18,11 +18,8 @@ class BucketListTestCase(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.bucket_list = {"title":"Road Trip", "description":"Stuff to do on my road trip"}
-<<<<<<< HEAD
         self.bucket_list_item = {"name":"Go to Mombasa","bucketlist_id":1}
-=======
-        self.bucket_list_item = {"name":"Go to Mombasa"}
->>>>>>> ft-bucketlist-items
+
 
         db.create_all()
 
