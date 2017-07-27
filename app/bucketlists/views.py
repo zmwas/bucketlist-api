@@ -7,7 +7,8 @@ from app.utils import api
 from serializers import bucketlist,bucketlist_item
 from controller import (create_bucket_list,get_all_bucketlists,
                        get_single_bucketlist,delete_bucket_list,
-                       update_bucket_list,create_bucket_list_item)
+                       update_bucket_list,create_bucket_list_item,
+                       update_bucket_list_item)
 
 namespace = api.namespace('bucketlist',description='BucketList operations')
 
@@ -62,4 +63,12 @@ class BucketListItemsResource(Resource):
         create_bucket_list_item(data)
         return 200
 
-        
+
+@namespace.route('/<int:id>/items/<int:item_id>')
+@namespace.param(('id','BucketList identifier'),('item_id','BucketListItem identifier'))
+class BucketListItemsResource(Resource):
+    @api.expect(bucketlist_item)
+    def put(self,id,item_id):
+        data = request.get_json(force = True)
+        update_bucket_list_item(id,item_id,data)
+        return 200
