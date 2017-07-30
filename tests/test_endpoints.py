@@ -34,7 +34,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
 
     def test_get_single_bucket_list_with_nonexistent_id(self):
         response = self.client.get('/bucketlist/19')
-        self.assertIn('{\n    "message": "Bucketlist doesn\'t exist"\n}\n',response.data)
+        self.assertEqual(response.status_code,404)
 
     def test_delete_single_bucket_list_endpoint(self):
         self.client.post('/bucketlist/',data=self.bucketlist,
@@ -43,13 +43,12 @@ class BucketListEndpointTestcase(unittest.TestCase):
 
         self.assertEqual(response.status_code,200)
         response = self.client.get('/bucketlist/1')
-        self.assertIn('{\n    "message": "Bucketlist doesn\'t exist"\n}\n',response.data)
+        self.assertEqual(response.status_code,404)
 
     def test_delete_non_existent_bucket_list_endpoint(self):
         response = self.client.delete('/bucketlist/1')
 
         self.assertEqual(response.status_code,404)
-        self.assertIn('{\n    "message": "Bucketlist doesn\'t exist"\n}\n',response.data)
 
     def test_update_single_bucket_list_endpoint(self):
         self.client.post('/bucketlist/',data=self.bucketlist,
