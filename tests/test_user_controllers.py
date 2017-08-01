@@ -39,6 +39,8 @@ class UserTestCase(unittest.TestCase):
         data ={"email":"zac@gmail.com","password":"pass"}
         self.assertEqual(create_user(data),"Password should be at least 8 characters long")
 
+        
+
 
     def tearDown(self):
         db.session.remove()

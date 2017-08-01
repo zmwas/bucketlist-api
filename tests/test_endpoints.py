@@ -1,4 +1,5 @@
 import unittest
+from base64 import b64encode
 from app import create_app,db
 from config import app_config
 
@@ -12,6 +13,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
         self.client = self.app.test_client()
         self.bucketlist = '{"title":"2018","description":"Stuff to do in 2018"}'
         self.bucket_list_item = '{"name":"Finish watching One Piece"}'
+        self.user = '{"email":"zac@gmail.com","password":"hunter123"}'
         db.create_all()
 
     def test_bucket_list_creation_endpoint(self):
@@ -118,7 +120,40 @@ class BucketListEndpointTestcase(unittest.TestCase):
         response = self.client.delete('/bucketlist/1/items/1')
         self.assertEqual(response.status_code,404)
 
+    def test_register_user_endpoint_returns_200(self):
+        response = self.client.post('/auth/register',data=self.user,
+                                        content_type="application/json")
+        self.assertEqual(response.status_code,200)
 
+    def test_register_user_endpoint_with_no_email_returns_400(self):
+        data = '{"email":"","password":"hunter123"}'
+        response = self.client.post('/auth/register',data=data,
+                                        content_type="application/json")
+        self.assertEqual(response.status_code,400)
+
+    def test_register_user_endpoint_with_no_password_returns_400(self):
+        data = '{"email":"zac@gmail.com","password":""}'
+        response = self.client.post('/auth/register',data=data,
+                                        content_type="application/json")
+        self.assertEqual(response.status_code,400)
+    def test_register_user_endpoint_with_short_password_returns_400(self):
+        data = '{"email":"zac@gmail.com","password":"zac"}'
+        response = self.client.post('/auth/register',data=data,
+                                        content_type="application/json")
+        self.assertEqual(response.status_code,400)
+    def test_login_user_endpoint_returns_200(self):
+         self.client.post('/auth/register',data=self.user,
+                                    content_type="application/json")
+         headers = {
+            'Authorization':
+            'Basic ' + b64encode("{0}:{1}".format("zac@gmail.com", "hunter123"))
+            }
+         response = self.client.post('/auth/login',
+                                         content_type="application/json",
+                                         headers=headers)
+
+
+         self.assertEqual(200, response.status_code)
 
 
 
