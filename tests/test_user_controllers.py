@@ -8,7 +8,6 @@ class UserTestCase(unittest.TestCase):
 
     def setUp(self):
         self.app = create_app("testing")
-        print self.app
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.user ={"email":"zac@gmail.com","password":"hunter123"}
@@ -39,10 +38,13 @@ class UserTestCase(unittest.TestCase):
         data ={"email":"zac@gmail.com","password":"pass"}
         self.assertEqual(create_user(data),"Password should be at least 8 characters long")
 
-        
+
 
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
+
+
+  

@@ -1,14 +1,14 @@
 from flask import g,request
 from flask_httpauth import HTTPTokenAuth
 from werkzeug.exceptions import NotFound,Unauthorized,BadRequest
-
 from flask_restplus import Resource
-from app.utils import api
+from flask_restplus import reqparse
 
+from app.utils import api
 from serializers import bucketlist,bucketlist_item
 from controller import (create_bucket_list,get_all_bucketlists,
                        get_single_bucketlist,delete_bucket_list,
-                       get_single_bucketlist_item,
+                       get_single_bucketlist_item,get_bucketlist_by_name,
                        update_bucket_list,create_bucket_list_item,
                        update_bucket_list_item,delete_bucket_list_items)
 from app.users.models import User
@@ -26,7 +26,6 @@ def verify_token(token):
         raise Unauthorized("Not Authorized")
         return False
     g.user = user
-    print(g.user)
     return True
 
 
@@ -36,7 +35,30 @@ class BucketListResource(Resource):
     @api.marshal_list_with(bucketlist)
     @token_auth.login_required
     def get(self):
-        return get_all_bucketlists(g.user.id)
+        parser = reqparse.RequestParser()
+        parser.add_argument('q',required=False,location='args')
+        parser.add_argument('page',type=int, required=False,
+         default=1, help='Page number',location='args')
+        parser.add_argument('per_page', type=int, required=False,
+                            choices=[2, 10, 20, 30, 40, 50],
+                            default=10,
+                            help='Results per page {error_msg}',location='args')
+        args = parser.parse_args()
+        page = args.get('page', 1)
+        per_page = args.get('per_page', 10)
+        if args["q"]:
+            print (args)
+            bucket_name = args.get('q')
+            if get_bucketlist_by_name(g.user.id,bucket_name) == "Bucketlist doesn't exist":
+                raise NotFound("Bucketlist doesn't exist")
+            return get_bucketlist_by_name(g.user.id,bucket_name).all()
+        elif args['page'] and args['per_page']:
+            return get_all_bucketlists(g.user.id).paginate(page, per_page, error_out=False).items
+        elif args['page'] and args['per_page'] and args['q']:
+            return get_bucketlist_by_name(g.user.id,bucket_name).paginate(page, per_page, error_out=False).items
+
+
+
 
     @api.expect(bucketlist)
     @token_auth.login_required
@@ -50,6 +72,7 @@ class BucketListResource(Resource):
             raise BadRequest("Please provide a title for your bucketlist")
         create_bucket_list(g.user.id,data)
         return  200
+
 
 @namespace.route('/<int:id>')
 @namespace.param('id','BucketList identifier')
