@@ -1,5 +1,5 @@
 from flask import g,jsonify,request
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest,Unauthorized
 
 from flask_restplus import Resource
 from flask_httpauth import HTTPBasicAuth
@@ -21,13 +21,12 @@ namespace = api.namespace('auth',description='Creation and authentication of use
 @auth.verify_password
 def verify_password(email_or_token, password):
     user = User.verify_auth_token(email_or_token)
-
-    if not user:
+    if not user or type(user)!=User:
         user = User.query.filter_by(email=email_or_token).first()
         if not user or not user.verify_password_hash(password):
+            raise Unauthorized("Not Authorized")
             return False
     g.user = user
-    print(g.user)
     return True
 
 
@@ -50,4 +49,4 @@ class LoginUserResource(Resource):
     @auth.login_required
     def post(self):
         token = g.user.generate_auth_token()
-        return jsonify({'Authorization': token.decode('ascii')},200)
+        return jsonify({'Authorization': token.decode('ascii')})

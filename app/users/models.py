@@ -19,10 +19,9 @@ class User(db.Model):
     def verify_password_hash(self,password):
         return pwdcontext.verify(password,self.password_hash)
 
-    def generate_auth_token(self,expiration=700):
+    def generate_auth_token(self,expiration=70000):
         serializer = Serializer('nqqijvwyv+8@kwag_9k^&2gnvw40qf34^=l$s6ph#3vnug4f)',expires_in=expiration)
         return serializer.dumps({'id':self.id})
-
 
     @staticmethod
     def verify_auth_token(token):
@@ -31,8 +30,8 @@ class User(db.Model):
         try:
             data = serializer.loads(token)
         except SignatureExpired:
-            return None    # valid token, but expired
+            return SignatureExpired    # valid token, but expired
         except BadSignature:
-            return None    # invalid token
-        user = self.query.get(data['id'])
+            return BadSignature    # invalid token
+        user = User.query.get(data['id'])
         return user
