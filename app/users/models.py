@@ -12,6 +12,7 @@ class User(db.Model):
     id = db.Column(db.Integer(),primary_key=True)
     email = db.Column(db.String(64),unique=True)
     password_hash = db.Column(db.String(128))
+    bucketlists = db.relationship('BucketList',backref='user',lazy='dynamic')
 
     def generate_hash(self,password):
         self.password_hash = pwdcontext.encrypt(password)

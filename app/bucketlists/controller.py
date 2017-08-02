@@ -1,37 +1,41 @@
 from app import db
 from models import BucketList,BucketListItem
-
-
-def create_bucket_list(data):
+from app.users.models import User
+def create_bucket_list(user_id,data):
     title = data.get('title')
     description = data.get('description')
-
-
-    bucketlist = BucketList(title=title,description=description)
+    if len(title)==0 or title == None:
+        return "Please provide a title for your bucketlist"
+    bucketlists = BucketList.query.filter_by(user_id=user_id,title=title).first()
+    if bucketlists is not None:
+        return "Similar bucketlist title"
+    bucketlist = BucketList(title=title,description=description,user_id=user_id)
     db.session.add(bucketlist)
     db.session.commit()
 
-def get_all_bucketlists():
-    return BucketList.query.all()
+def get_all_bucketlists(user_id):
+    user = User.query.get(user_id)
+    bucketlists = user.bucketlists.all()
+    return bucketlists
 
-def get_single_bucketlist(id):
+def get_single_bucketlist(id,user_id):
 
-    bucketlist = BucketList.query.filter_by(id=id).first()
+    bucketlist = BucketList.query.filter_by(id=id,user_id=user_id).first()
     if bucketlist == None:
         return "Bucketlist doesn't exist"
     return bucketlist
 
-def delete_bucket_list(id):
-    bucketlist = get_single_bucketlist(id)
+def delete_bucket_list(id,user_id):
+    bucketlist = get_single_bucketlist(id,user_id)
     if bucketlist == "Bucketlist doesn't exist":
         return "Bucketlist doesn't exist"
     db.session.delete(bucketlist)
     db.session.commit()
 
-def update_bucket_list(id,data):
+def update_bucket_list(id,user_id,data):
     title = data.get('title')
     description = data.get('description')
-    bucketlist = get_single_bucketlist(id)
+    bucketlist = get_single_bucketlist(id,user_id)
     if bucketlist == "Bucketlist doesn't exist":
         return "Bucketlist doesn't exist"
     bucketlist.title = title
@@ -41,10 +45,12 @@ def update_bucket_list(id,data):
     return bucketlist
 
 
-def create_bucket_list_item(data,bucketlist_id):
+def create_bucket_list_item(data,bucketlist_id,user_id):
     name = data.get('name')
+    if name == None or len(name) == 0:
+        return "Please provide a name for the item"
     item = BucketListItem(name=name)
-    bucket_list = BucketList.query.filter_by(id=bucketlist_id).first()
+    bucket_list = BucketList.query.filter_by(id=bucketlist_id,user_id=user_id).first()
     bucket_list.bucketlistitems.append(item)
     db.session.add(item)
     db.session.commit()

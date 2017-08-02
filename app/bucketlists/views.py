@@ -36,7 +36,7 @@ class BucketListResource(Resource):
     @api.marshal_list_with(bucketlist)
     @token_auth.login_required
     def get(self):
-        return get_all_bucketlists()
+        return get_all_bucketlists(g.user.id)
 
     @api.expect(bucketlist)
     @token_auth.login_required
@@ -46,7 +46,7 @@ class BucketListResource(Resource):
 
         """
         data = request.get_json(force = True)
-        create_bucket_list(data)
+        create_bucket_list(g.user.id,data)
         return  200
 
 @namespace.route('/<int:id>')
@@ -55,20 +55,21 @@ class SingleBucketListResource(Resource):
     @token_auth.login_required
     @api.marshal_with(bucketlist)
     def get(self,id):
-        if get_single_bucketlist(id) == "Bucketlist doesn't exist":
+        if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
-        return get_single_bucketlist(id)
+        return get_single_bucketlist(id,g.user.id)
     @token_auth.login_required
     def delete(self,id):
-        if get_single_bucketlist(id) == "Bucketlist doesn't exist":
+        if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
-        return delete_bucket_list(id), 200
+        return delete_bucket_list(id,g.user.id), 200
     @token_auth.login_required
     @api.expect(bucketlist)
     def put(self,id):
-        if get_single_bucketlist(id) == "Bucketlist doesn't exist":
+        if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
-        update_bucket_list
+        data = request.get_json(force = True)
+        update_bucket_list(id,g.user.id,data)
         return 200
 
 @namespace.route('/<int:id>/items')
@@ -78,9 +79,9 @@ class BucketListItemsResource(Resource):
     @api.expect(bucketlist_item)
     def post(self,id):
         data = request.get_json(force = True)
-        if get_single_bucketlist(id) == "Bucketlist doesn't exist":
+        if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
-        create_bucket_list_item(data,id)
+        create_bucket_list_item(data,id,g.user.id)
         return 200
 
 
@@ -91,7 +92,7 @@ class BucketListItemsResource(Resource):
     @api.expect(bucketlist_item)
     def put(self,id,item_id):
         data = request.get_json(force = True)
-        if get_single_bucketlist(id) == "Bucketlist doesn't exist":
+        if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
         elif get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
             raise NotFound("Item does not exist")
@@ -99,7 +100,7 @@ class BucketListItemsResource(Resource):
         return 200
     @token_auth.login_required
     def delete(self,id,item_id):
-        if get_single_bucketlist(id) == "Bucketlist doesn't exist":
+        if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
         elif get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
             raise NotFound("Item does not exist")
