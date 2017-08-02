@@ -1,6 +1,6 @@
 from flask import g,request
 from flask_httpauth import HTTPTokenAuth
-from werkzeug.exceptions import NotFound,Unauthorized
+from werkzeug.exceptions import NotFound,Unauthorized,BadRequest
 
 from flask_restplus import Resource
 from app.utils import api
@@ -46,6 +46,8 @@ class BucketListResource(Resource):
 
         """
         data = request.get_json(force = True)
+        if create_bucket_list == "Please provide a title for your bucketlist":
+            raise BadRequest("Please provide a title for your bucketlist")
         create_bucket_list(g.user.id,data)
         return  200
 
@@ -81,6 +83,9 @@ class BucketListItemsResource(Resource):
         data = request.get_json(force = True)
         if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
+        if create_bucket_list_item(data,id,g.user.id) == "Please provide a name for the item":
+            raise BadRequest("Please provide a name for the item")
+
         create_bucket_list_item(data,id,g.user.id)
         return 200
 
