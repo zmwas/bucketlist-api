@@ -19,4 +19,4 @@ class BucketListResource(Resource):
         """
         data = request.get_json(force = True)
         create_bucket_list(data)
-        return None, 201
+        return  201
