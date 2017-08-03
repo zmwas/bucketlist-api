@@ -68,7 +68,11 @@ class BucketListResource(Resource):
 
         """
         data = request.get_json(force = True)
-        if create_bucket_list == "Please provide a title for your bucketlist":
+        title = data.get('title')
+        bucketlists = BucketList.query.filter_by(user_id=user_id,title=title).first()
+        if bucketlists is not None:
+            raise BadRequest("A bucketlist with that name exists")
+        elif title == None or len(title)==0:
             raise BadRequest("Please provide a title for your bucketlist")
         create_bucket_list(g.user.id,data)
         return  200
@@ -104,9 +108,13 @@ class BucketListItemsResource(Resource):
     @api.expect(bucketlist_item)
     def post(self,id):
         data = request.get_json(force = True)
-        if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
+        name  = data.get('name')
+        item = BucketListItem.query.filter_by(bucketlist_id=id,name=name).first()
+        if name == None or len(name) == 0:
+            raise BadRequest("Please provide a name for the item")
+        elif get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
-        if create_bucket_list_item(data,id,g.user.id) == "Please provide a name for the item":
+        elif item is not None:
             raise BadRequest("Please provide a name for the item")
 
         create_bucket_list_item(data,id,g.user.id)
