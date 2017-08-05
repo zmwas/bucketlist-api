@@ -1,5 +1,5 @@
 from app import db
-from .models import BucketList,BucketListItem
+from models import BucketList,BucketListItem
 from app.users.models import User
 
 

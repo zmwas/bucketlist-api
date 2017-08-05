@@ -5,14 +5,14 @@ from flask_restplus import Resource
 from flask_restplus import reqparse
 
 from app.utils import api
-from .serializers import bucketlist,bucketlist_item
-from .controller import (create_bucket_list,get_all_bucketlists,
+from serializers import bucketlist,bucketlist_item
+from controller import (create_bucket_list,get_all_bucketlists,
                        get_single_bucketlist,delete_bucket_list,
                        get_single_bucketlist_item,get_bucketlist_by_name,
                        update_bucket_list,create_bucket_list_item,
                        update_bucket_list_item,delete_bucket_list_items)
 from app.users.models import User
-from .models import BucketList,BucketListItem
+from models import BucketList,BucketListItem
 
 token_auth = HTTPTokenAuth('Bearer')
 
