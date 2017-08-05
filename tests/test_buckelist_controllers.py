@@ -36,7 +36,7 @@ class BucketListTestCase(unittest.TestCase):
         queried_bucketlist = BucketList.query.first()
         self.assertIsNotNone(queried_bucketlist)
         self.assertTrue(queried_bucketlist)
-
+        
     def test_bucket_list_creation_with_similar_title(self):
         create_user(self.user)
         create_bucket_list(1,self.bucket_list)

@@ -37,6 +37,9 @@ class UserTestCase(unittest.TestCase):
     def test_user_creation_with_short_password_returns_error(self):
         data ={"email":"zac@gmail.com","password":"pass"}
         self.assertEqual(create_user(data),"Password should be at least 8 characters long")
+    def test_user_creation_with_no_email_returns_error(self):
+        data ={"email":"wetydyvtde","password":"password123"}
+        self.assertEqual(create_user(data),"Please provide a valid email")
 
 
 
@@ -45,6 +48,3 @@ class UserTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
-
-
-  

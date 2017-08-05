@@ -38,7 +38,51 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                         headers=self.headers_auth
                                         )
         self.assertEqual(response.status_code, 200)
+        
 
+    def test_bucket_list_creation_with_empty_string_endpoint_returns_400(self):
+        bucketlist = '{"title":"        ","description":"Stuff to do in 2018"}'
+        response = self.client.post('/bucketlist/',data=bucketlist,
+                                        content_type="application/json",
+                                        headers=self.headers_auth
+                                        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_bucket_list_creation_endpoint_with_similar_title_returns_400(self):
+        self.client.post('/bucketlist/',data=self.bucketlist,
+                                        content_type="application/json",
+                                        headers=self.headers_auth
+                                        )
+        response=self.client.post('/bucketlist/',data=self.bucketlist,
+                                        content_type="application/json",
+                                        headers=self.headers_auth
+                                        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_bucketlist_pagination(self):
+        self.client.post('/bucketlist/',data=self.bucketlist,
+                                                content_type="application/json",
+                                                headers=self.headers_auth)
+        response = self.client.get('/bucketlist/?page=1&per_page=10',
+                                   headers=self.headers_auth)
+        self.assertEqual(response.status_code,200)
+
+
+    def test_bucketlist_search_with_right_term_returns_200(self):
+        self.client.post('/bucketlist/',data=self.bucketlist,
+                                                content_type="application/json",
+                                                headers=self.headers_auth)
+        response = self.client.get('/bucketlist/?q=201&page=1&per_page=10',
+                                   headers=self.headers_auth)
+        self.assertEqual(response.status_code,200)
+
+    def test_bucketlist_search_with_wrong_term_returns_404(self):
+        self.client.post('/bucketlist/',data=self.bucketlist,
+                                                content_type="application/json",
+                                                headers=self.headers_auth)
+        response = self.client.get('/bucketlist/?q=201page=1&per_page=10',
+                                   headers=self.headers_auth)
+        self.assertEqual(response.status_code,404)
 
     def test_all_bucket_lists_end_point(self):
         self.client.post('/bucketlist/',data=self.bucketlist,
@@ -46,6 +90,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                                 headers=self.headers_auth)
         response = self.client.get('/bucketlist/',headers=self.headers_auth)
         self.assertEqual(response.status_code,200)
+
 
 
     def test_get_single_bucket_list_endpoint(self):
@@ -101,6 +146,30 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                     content_type="application/json",
                                     headers=self.headers_auth)
         self.assertEqual(response.status_code,200)
+    def test_bucket_list_item_creation_endpoint_with_similar_name_returns_400(self):
+        self.client.post('/bucketlist/',data=self.bucketlist,
+                                            content_type="application/json",
+                                            headers=self.headers_auth)
+        self.client.post('/bucketlist/1/items',
+                                    data=self.bucket_list_item,
+                                    content_type="application/json",
+                                    headers=self.headers_auth)
+        response = self.client.post('/bucketlist/1/items',
+                                    data=self.bucket_list_item,
+                                    content_type="application/json",
+                                    headers=self.headers_auth)
+
+        self.assertEqual(response.status_code,400)
+    def test_bucket_list_item_creation_endpoint_with_empty_name_returns_400(self):
+        self.client.post('/bucketlist/',data=self.bucketlist,
+                                            content_type="application/json",
+                                            headers=self.headers_auth)
+        bucket_list_item = '{"name":"     "}'
+        response = self.client.post('/bucketlist/1/items',
+                                    data=bucket_list_item,
+                                    content_type="application/json",
+                                    headers=self.headers_auth)
+        self.assertEqual(response.status_code,400)
 
     def test_item_creation_with_non_existent_bucketlist_id_returns_404(self):
         response = self.client.post('/bucketlist/1/items',
@@ -122,12 +191,14 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                     content_type="application/json",
                                     headers=self.headers_auth)
         self.assertEqual(response.status_code,200)
+
     def test_update_item_with_non_existent_bucketlist_item_id_returns_404(self):
         data = '{"name":"Finish watching Fairy Tail"}'
         response=self.client.put('/bucketlist/1/items/76',data=data,
                                     content_type="application/json",
                                     headers=self.headers_auth)
         self.assertEqual(response.status_code,404)
+
     def test_update_item_with_non_existent_bucketlist_id_returns_404(self):
         data = '{"name":"Finish watching Fairy Tail"}'
         response=self.client.put('/bucketlist/1/items/76',data=data,
@@ -176,20 +247,19 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                         content_type="application/json",
                                         headers=self.headers_auth)
         self.assertEqual(response.status_code,400)
+
     def test_register_user_endpoint_with_short_password_returns_400(self):
         data = '{"email":"zac@gmail.com","password":"zac"}'
         response = self.client.post('/auth/register',data=data,
                                         content_type="application/json",
                                         headers=self.headers_auth)
         self.assertEqual(response.status_code,400)
+
     def test_login_user_endpoint_returns_200(self):
 
          response = self.client.post('/auth/login',
                                          content_type="application/json",
                                          headers=self.headers_basic)
-
-
-
          self.assertEqual(200, response.status_code)
 
 
