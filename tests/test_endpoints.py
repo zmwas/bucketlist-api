@@ -18,7 +18,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
         self.bucket_list_item = '{"name":"Finish watching One Piece"}'
         self.user = '{"email":"zac@gmail.com","password":"hunter123"}'
         self.headers_basic = {
-           'Authorization': 'Basic ' + b64encode("{0}:{1}".format("zac@gmail.com", "hunter123"))
+           'Authorization': 'Basic ' + b64encode("{0}:{1}".format(b'zac@gmail.com', b'hunter123'))
            }
         self.registered_user = self.client.post('/auth/register',data=self.user,
                                    content_type="application/json")
@@ -38,7 +38,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                         headers=self.headers_auth
                                         )
         self.assertEqual(response.status_code, 200)
-        
+
 
     def test_bucket_list_creation_with_empty_string_endpoint_returns_400(self):
         bucketlist = '{"title":"        ","description":"Stuff to do in 2018"}'
