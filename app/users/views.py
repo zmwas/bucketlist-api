@@ -19,13 +19,12 @@ namespace = api.namespace('auth',description='Creation and authentication of use
 
 
 @auth.verify_password
-def verify_password(email_or_token, password):
-    user = User.verify_auth_token(email_or_token)
-    if not user or type(user)!=User:
-        user = User.query.filter_by(email=email_or_token).first()
-        if not user or not user.verify_password_hash(password):
-            raise Unauthorized("Not Authorized")
-            return False
+def verify_password(email, password):
+    user = User.query.filter_by(email=email).first()
+    if not user or not user.verify_password_hash(password):
+        raise Unauthorized("Not Authorized")
+        return False
+
     g.user = user
     return True
 
