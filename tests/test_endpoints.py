@@ -28,6 +28,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
 
         self.login_response_json = json.loads(self.login_response.data
                                               .decode('utf-8'))
+        print(login_response_json)
         self.token = self.login_response_json["Authorization"]
         self.headers_auth = {'Authorization': "Bearer " + self.token}
 
