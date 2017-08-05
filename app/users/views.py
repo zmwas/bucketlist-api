@@ -4,9 +4,9 @@ from werkzeug.exceptions import BadRequest,Unauthorized
 from flask_restplus import Resource
 from flask_httpauth import HTTPBasicAuth
 from app.utils import api
-from serializers import user
-from controller import create_user
-from models import User
+from .serializers import user
+from .controller import create_user
+from .models import User
 
 
 auth = HTTPBasicAuth()
