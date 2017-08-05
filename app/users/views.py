@@ -41,6 +41,8 @@ class RegisterUserResource(Resource):
             raise BadRequest("Please enter all details")
         elif create_user(data) == "Password should be at least 8 characters long":
             raise BadRequest("Password should be at least 8 characters long")
+        elif create_user(data)=="Please provide a valid email":
+             raise BadRequest("Please provide a valid email")
         create_user(data)
         return 201
 

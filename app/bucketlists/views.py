@@ -12,6 +12,7 @@ from controller import (create_bucket_list,get_all_bucketlists,
                        update_bucket_list,create_bucket_list_item,
                        update_bucket_list_item,delete_bucket_list_items)
 from app.users.models import User
+from models import BucketList,BucketListItem
 
 token_auth = HTTPTokenAuth('Bearer')
 
@@ -69,11 +70,12 @@ class BucketListResource(Resource):
         """
         data = request.get_json(force = True)
         title = data.get('title')
-        bucketlists = BucketList.query.filter_by(user_id=user_id,title=title).first()
+        title  = title.strip()
+        if title == None or len(title)==0:
+            raise BadRequest("Please provide a title for your bucketlist")
+        bucketlists = BucketList.query.filter_by(user_id=g.user.id,title=title).first()
         if bucketlists is not None:
             raise BadRequest("A bucketlist with that name exists")
-        elif title == None or len(title)==0:
-            raise BadRequest("Please provide a title for your bucketlist")
         create_bucket_list(g.user.id,data)
         return  200
 
@@ -108,7 +110,7 @@ class BucketListItemsResource(Resource):
     @api.expect(bucketlist_item)
     def post(self,id):
         data = request.get_json(force = True)
-        name  = data.get('name')
+        name  = data.get('name').strip()
         item = BucketListItem.query.filter_by(bucketlist_id=id,name=name).first()
         if name == None or len(name) == 0:
             raise BadRequest("Please provide a name for the item")
@@ -116,7 +118,6 @@ class BucketListItemsResource(Resource):
             raise NotFound("Bucketlist doesn't exist")
         elif item is not None:
             raise BadRequest("Please provide a name for the item")
-
         create_bucket_list_item(data,id,g.user.id)
         return 200
 
