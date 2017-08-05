@@ -1,3 +1,4 @@
+import os
 import app
 from app import db
 from passlib.apps import custom_app_context as pwdcontext
@@ -20,14 +21,14 @@ class User(db.Model):
     def verify_password_hash(self,password):
         return pwdcontext.verify(password,self.password_hash)
 
-    def generate_auth_token(self,expiration=70000):
-        serializer = Serializer('nqqijvwyv+8@kwag_9k^&2gnvw40qf34^=l$s6ph#3vnug4f)',expires_in=expiration)
+    def generate_auth_token(self,expiration=700):
+        serializer = Serializer(os.getenv('SECRET'),expires_in=expiration)
         return serializer.dumps({'id':self.id})
 
     @staticmethod
     def verify_auth_token(token):
 
-        serializer = Serializer('nqqijvwyv+8@kwag_9k^&2gnvw40qf34^=l$s6ph#3vnug4f)')
+        serializer = Serializer(os.getenv('SECRET'))
         try:
             data = serializer.loads(token)
         except SignatureExpired:

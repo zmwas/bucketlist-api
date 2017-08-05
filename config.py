@@ -2,7 +2,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
     ERROR_404_HELP = False
-    SECRET_KEY = 'nqqijvwyv+8@kwag_9k^&2gnvw40qf34^=l$s6ph#3vnug4f)'
+    SECRET_KEY = os.getenv('SECRET')
     pass
 
 
@@ -11,7 +11,9 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_ECHO = True
 
 class ProductionConfig(Config):
-    pass
+    DEBUG = False
+    SECRET_KEY = os.getenv('SECRET')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DB')
 
 class TestingConfig(Config):
 
@@ -19,8 +21,7 @@ class TestingConfig(Config):
     TESTING = True
     WTF_CSRF_ENABLED =False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = ('sqlite:///' +
-                                os.path.join(basedir, 'bucket_list.db'))
+    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DB')
 
 app_config = {
     'development': DevelopmentConfig,

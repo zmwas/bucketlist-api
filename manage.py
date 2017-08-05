@@ -4,7 +4,7 @@ from app import create_app,db
 from app.bucketlists import models
 
 
-app = create_app('development')
+app = create_app(os.getenv('ENVIRONMENT'))
 migrate = Migrate(app,db)
 manager = Manager(app)
 manager.add_command('db',MigrateCommand)
