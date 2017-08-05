@@ -17,9 +17,9 @@ class BucketListEndpointTestcase(unittest.TestCase):
         self.bucketlist = '{"title":"2018","description":"Stuff to do in 2018"}'
         self.bucket_list_item = '{"name":"Finish watching One Piece"}'
         self.user = '{"email":"zac@gmail.com","password":"hunter123"}'
-        self.credentials = bytes( "zac@gmail.com" + ":" + "hunter123", 'ascii').decode('ascii')
+        self.credentials = bytes(, 'ascii')
         self.headers_basic = {
-           'Authorization': 'Basic ' + b64encode(self.credentials)
+           'Authorization': 'Basic {user}'.format(user=b64encode(b"zac@gmail.com:hunter123")
            }
         self.registered_user = self.client.post('/auth/register',data=self.user,
                                    content_type="application/json")
