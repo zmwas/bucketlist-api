@@ -49,6 +49,6 @@ class RegisterUserResource(Resource):
 class LoginUserResource(Resource):
     @auth.login_required
     def post(self):
-        print(g.user)
+        print(g.user.__dict__)
         token = g.user.generate_auth_token()
         return jsonify({'Authorization': token.decode('ascii')})
