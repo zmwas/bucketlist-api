@@ -9,8 +9,8 @@ from config import app_config
 
 db = SQLAlchemy()
 
-from bucketlists.views import namespace as bucketlist_namespace
-from users.views import namespace as auth_namespace
+from app.bucketlists.views import namespace as bucketlist_namespace
+from app.users.views import namespace as auth_namespace
 
 
 def create_app(config_name):
