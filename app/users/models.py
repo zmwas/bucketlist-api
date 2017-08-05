@@ -9,7 +9,7 @@ from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer,
 
 class User(db.Model):
     __tablename__  = 'users'
-    id = db.Column(db.Integer(),primary_key=True)
+    id = db.Column(db.Integer,primary_key=True)
     email = db.Column(db.String(64),unique=True)
     password_hash = db.Column(db.String(128))
     bucketlists = db.relationship('BucketList',backref='user',lazy='dynamic')
