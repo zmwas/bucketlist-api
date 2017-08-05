@@ -22,10 +22,11 @@ class BucketListEndpointTestcase(unittest.TestCase):
            }
         self.registered_user = self.client.post('/auth/register',data=self.user,
                                    content_type="application/json")
+        print(self.registered_user)
         self.login_response = self.client.post('auth/login',
                                                content_type="application/json",
                                                headers=self.headers_basic)
-
+        print(self.registered_user)
         self.login_response_json = json.loads(self.login_response.data
                                               .decode('utf-8'))
         self.token = self.login_response_json["Authorization"]
@@ -38,7 +39,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                         headers=self.headers_auth
                                         )
         self.assertEqual(response.status_code, 200)
-        
+
 
     def test_bucket_list_creation_with_empty_string_endpoint_returns_400(self):
         bucketlist = '{"title":"        ","description":"Stuff to do in 2018"}'
