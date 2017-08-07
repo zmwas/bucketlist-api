@@ -22,15 +22,13 @@ class BucketListEndpointTestcase(unittest.TestCase):
            }
         self.registered_user = self.client.post('/auth/register',data=self.user,
                                    content_type="application/json")
-        print(self.registered_user)
         self.login_response = self.client.post('auth/login',
                                                content_type="application/json",
                                                headers=self.headers_basic)
-        print(self.login_response)
         self.login_response_json = json.loads(self.login_response.data
                                               .decode('utf-8'))
         self.token = self.login_response_json["Authorization"]
-        self.headers_auth = {'Authorization': "Bearer " + self.token}
+        self.headers_auth = {'Authorization': 'Bearer ' + self.token}
 
 
     def test_bucket_list_creation_endpoint(self):
@@ -38,6 +36,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                         content_type="application/json",
                                         headers=self.headers_auth
                                         )
+        print(response.data)
         self.assertEqual(response.status_code, 200)
 
 
@@ -81,7 +80,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
         self.client.post('/bucketlist/',data=self.bucketlist,
                                                 content_type="application/json",
                                                 headers=self.headers_auth)
-        response = self.client.get('/bucketlist/?q=201page=1&per_page=10',
+        response = self.client.get('/bucketlist/?q=hgqpage=1&per_page=10',
                                    headers=self.headers_auth)
         self.assertEqual(response.status_code,404)
 

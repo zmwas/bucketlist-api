@@ -1,5 +1,4 @@
 import os
-basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
     ERROR_404_HELP = False
     SECRET_KEY = os.getenv('SECRET')
@@ -12,8 +11,9 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SECRET_KEY = os.getenv('SECRET')
-    SQLALCHEMY_DATABASE_URI = os.getenv('DB')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = False
+
 
 class TestingConfig(Config):
 
