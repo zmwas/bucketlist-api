@@ -8,11 +8,13 @@ class Config(object):
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_ECHO = True
+    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/bucketlist'
 
 class ProductionConfig(Config):
     DEBUG = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
+    SQLALCHEMY_DATABASE_URI = os.getenv('DB')
 
 
 class TestingConfig(Config):

@@ -9,7 +9,7 @@ from controller import create_user
 from models import User
 
 
-auth = HTTPBasicAuth()
+aut = HTTPBasicAuth()
 
 
 
@@ -18,7 +18,7 @@ namespace = api.namespace('auth',description='Creation and authentication of use
 
 
 
-@auth.verify_password
+@aut.verify_password
 def verify_password(email, password):
     user = User.query.filter_by(email=email).first()
     if not user or not user.verify_password_hash(password):
@@ -35,6 +35,10 @@ class RegisterUserResource(Resource):
 
     @api.expect(user)
     def post(self):
+        """
+        Register a user
+
+        """
         data = request.get_json(force = True)
         if create_user(data) == "Please enter all details":
             raise BadRequest("Please enter all details")
@@ -42,12 +46,18 @@ class RegisterUserResource(Resource):
             raise BadRequest("Password should be at least 8 characters long")
         elif create_user(data)=="Please provide a valid email":
              raise BadRequest("Please provide a valid email")
+        if User.query.filter_by(email=data.get('email')).first() is not None :
+            raise BadRequest("User with that email exists")
         create_user(data)
         return 201
 
 @namespace.route('/login')
 class LoginUserResource(Resource):
-    @auth.login_required
+    @aut.login_required
     def post(self):
+        """
+        Log in a user
+
+        """
         token = g.user.generate_auth_token()
         return jsonify({'Authorization': token.decode('ascii')})
