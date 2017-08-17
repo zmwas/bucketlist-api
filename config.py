@@ -2,7 +2,7 @@ import os
 class Config(object):
     ERROR_404_HELP = False
     SECRET_KEY = os.getenv('SECRET')
-    pass
+    
 
 
 class DevelopmentConfig(Config):
