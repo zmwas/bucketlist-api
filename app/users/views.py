@@ -23,7 +23,15 @@ namespace = api.namespace('auth',description='Creation and authentication of use
 def verify_password(email, password):
     user = User.query.filter_by(email=email).first()
     if not user or not user.verify_password_hash(password):
-        raise Unauthorized("Not Authorized")
+        if len(email)==0:
+            raise Unauthorized("No email provided")
+        elif len(password)==0:
+            raise Unauthorized("No password provided")
+        elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
+                            email):
+            raise Unauthorized("Please provide a valid email")
+        else:
+            raise Unauthorized("Wrong email and password combination")    
         return False
 
     g.user = user
@@ -49,7 +57,7 @@ class RegisterUserResource(Resource):
             raise BadRequest("Password should be at least 8 characters long")
         elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
                             email):
-            return "Please provide a valid email"
+            raise BadRequest("Please provide a valid email")
         if User.query.filter_by(email=data.get('email')).first() is not None :
             raise BadRequest("User with that email exists")
         create_user(data)
@@ -63,5 +71,7 @@ class LoginUserResource(Resource):
         Log in a user
 
         """
+        # validate emails
+        # validate presence of inputs
         token = g.user.generate_auth_token()
         return jsonify({'Authorization': token.decode('ascii')})

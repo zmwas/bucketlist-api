@@ -2,13 +2,14 @@ import os
 class Config(object):
     ERROR_404_HELP = False
     SECRET_KEY = os.getenv('SECRET')
-    
+
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/bucketlist'
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 class ProductionConfig(Config):
     DEBUG = False

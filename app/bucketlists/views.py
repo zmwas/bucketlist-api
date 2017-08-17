@@ -1,11 +1,11 @@
-from flask import g,request
+from flask import g,request,make_response,jsonify
 from flask_httpauth import HTTPTokenAuth
 from werkzeug.exceptions import NotFound,Unauthorized,BadRequest
 from flask_restplus import Resource
 from flask_restplus import reqparse
 
 from app.utils import api
-from serializers import bucketlist,bucketlist_item,bucket
+from serializers import bucketlist,bucketlistitems,bucket
 from controller import (create_bucket_list,get_all_bucketlists,
                        get_single_bucketlist,delete_bucket_list,
                        get_single_bucketlist_item,get_bucketlist_by_name,
@@ -61,7 +61,8 @@ class BucketListResource(Resource):
             return get_all_bucketlists(g.user.id).paginate(page, per_page, error_out=False).items
         elif args['page'] and args['per_page'] and args['q']:
             return get_bucketlist_by_name(g.user.id,bucket_name).paginate(page, per_page, error_out=False).items
-        return  get_all_bucketlists(g.user.id)
+
+        return  get_all_bucketlists(g.user.id).paginate(page, per_page, error_out=False).items
 
 
     @api.header('Authorization', type=str, required=True)
@@ -81,7 +82,7 @@ class BucketListResource(Resource):
         if bucketlists is not None:
             raise BadRequest("A bucketlist with that name exists")
         create_bucket_list(g.user.id,data)
-        return  200
+        return {"message":"BucketList successfully created"}, 201
 
 
 @namespace.route('/<int:id>')
@@ -107,7 +108,8 @@ class SingleBucketListResource(Resource):
 
         if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
-        return delete_bucket_list(id,g.user.id), 204
+        delete_bucket_list(id,g.user.id)
+        return ({"message":"BucketList successfully deleted"},200)
     @api.header('Authorization', type=str, required=True)
     @token_auth.login_required
     @api.expect(bucketlist)
@@ -120,13 +122,13 @@ class SingleBucketListResource(Resource):
             raise NotFound("Bucketlist doesn't exist")
         data = request.get_json(force = True)
         update_bucket_list(id,g.user.id,data)
-        return 200
+        return {"message":"BucketList successfully updated"},200
 
 @namespace.route('/<int:id>/items')
 class BucketListItemsResource(Resource):
     @api.header('Authorization', type=str, required=True)
     @token_auth.login_required
-    @api.expect(bucketlist_item)
+    @api.expect(bucketlistitems)
     def post(self,id):
         """
         Create a  bucketlist item
@@ -140,16 +142,16 @@ class BucketListItemsResource(Resource):
         elif get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
         elif item is not None:
-            raise BadRequest("Please provide a name for the item")
+            raise BadRequest("Item with that name exists")
         create_bucket_list_item(data,id,g.user.id)
-        return 200
+        return {"message":"BucketList item successfully created"},201
 
 
 @namespace.route('/<int:id>/items/<int:item_id>')
 class BucketListItemsResource(Resource):
     @api.header('Authorization', type=str, required=True)
     @token_auth.login_required
-    @api.expect(bucketlist_item)
+    @api.expect(bucketlistitems)
     def put(self,id,item_id):
         """
         Update a  bucketlist item
@@ -162,9 +164,10 @@ class BucketListItemsResource(Resource):
         elif get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
             raise NotFound("Item does not exist")
         update_bucket_list_item(id,item_id,data)
-        return 200
+        return {"message":"BucketList item successfully updated"},200
     @api.header('Authorization', type=str, required=True)
     @token_auth.login_required
+    @api.expect(bucketlistitems)
     def delete(self,id,item_id):
         """
         Delete a  bucketlist item
@@ -174,4 +177,5 @@ class BucketListItemsResource(Resource):
             raise NotFound("Bucketlist doesn't exist")
         elif get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
             raise NotFound("Item does not exist")
-        return delete_bucket_list_items(id,item_id),204
+            delete_bucket_list_items(id,item_id)
+        return ({"message":"BucketList item successfully deleted"},200)
