@@ -1,4 +1,4 @@
- from flask_restplus import fields
+from flask_restplus import fields
 
 from app.utils import api
 
