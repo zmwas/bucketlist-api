@@ -230,29 +230,27 @@ class BucketListEndpointTestcase(unittest.TestCase):
 
     def test_register_user_endpoint_returns_200(self):
         response = self.client.post('/auth/register',data=self.user,
-                                        content_type="application/json",
-                                        headers=self.headers_basic)
+                                   content_type="application/json")
         self.assertEqual(response.status_code,200)
 
     def test_register_user_endpoint_with_no_email_returns_400(self):
         data = '{"email":"","password":"hunter123"}'
         response = self.client.post('/auth/register',data=data,
                                         content_type="application/json",
-                                        headers=self.headers_auth)
+                                        )
         self.assertEqual(response.status_code,400)
 
     def test_register_user_endpoint_with_no_password_returns_400(self):
         data = '{"email":"zac@gmail.com","password":""}'
         response = self.client.post('/auth/register',data=data,
                                         content_type="application/json",
-                                        headers=self.headers_auth)
+                                        )
         self.assertEqual(response.status_code,400)
 
     def test_register_user_endpoint_with_short_password_returns_400(self):
         data = '{"email":"zac@gmail.com","password":"zac"}'
-        response = self.client.post('/auth/register',data=data,
-                                        content_type="application/json",
-                                        headers=self.headers_auth)
+        response = self.client.post('/auth/register',data=self.user,
+                                   content_type="application/json")
         self.assertEqual(response.status_code,400)
 
     def test_login_user_endpoint_returns_200(self):
