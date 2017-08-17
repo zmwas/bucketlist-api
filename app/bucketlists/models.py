@@ -8,7 +8,9 @@ class BucketList(db.Model):
     id  = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250))
     description = db.Column(db.String(250),unique=False)
-    bucketlistitems = db.relationship('BucketListItem',backref='bucketlist',lazy='dynamic')
+    bucketlistitems = db.relationship('BucketListItem',backref='bucketlist'\
+                                      ,lazy='dynamic'\
+                                      ,cascade="all delete-orphan")
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
 
 class BucketListItem(db.Model):
