@@ -65,7 +65,7 @@ class BucketListResource(Resource):
 
 
     @api.header('Authorization', type=str, required=True)
-    @api.expect(bucket)
+    @api.expect(bucketlist)
     @token_auth.login_required
     def post(self):
         """
