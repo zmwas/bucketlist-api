@@ -10,7 +10,7 @@ class BucketList(db.Model):
     description = db.Column(db.String(250),unique=False)
     bucketlistitems = db.relationship('BucketListItem',backref='bucketlist'\
                                       ,lazy='dynamic'\
-                                      ,cascade="all delete-orphan")
+                                      ,cascade="all, delete-orphan")
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
 
 class BucketListItem(db.Model):
