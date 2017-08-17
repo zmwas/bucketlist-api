@@ -110,7 +110,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                                 headers=self.headers_auth)
         response = self.client.delete('/bucketlist/1',headers=self.headers_auth)
 
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code,204)
         response = self.client.get('/bucketlist/1',headers=self.headers_auth)
         self.assertIn('{"message": "Bucketlist doesn\'t exist"}\n',response.data)
 
@@ -216,7 +216,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                     headers=self.headers_auth)
         response = self.client.delete('/bucketlist/1/items/1',
                                       headers=self.headers_auth)
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code,204)
 
     def test_delete_item_with_non_existent_bucketlist_item_id_returns_404(self):
         response = self.client.delete('/bucketlist/1/items/1',
@@ -230,8 +230,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
 
     def test_register_user_endpoint_returns_200(self):
         response = self.client.post('/auth/register',data=self.user,
-                                        content_type="application/json",
-                                        headers=self.headers_auth)
+                                        content_type="application/json")
         self.assertEqual(response.status_code,200)
 
     def test_register_user_endpoint_with_no_email_returns_400(self):
