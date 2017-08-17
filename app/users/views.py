@@ -40,12 +40,15 @@ class RegisterUserResource(Resource):
 
         """
         data = request.get_json(force = True)
-        if create_user(data) == "Please enter all details":
+        email = data.get('email')
+        password = data.get('password')
+        if email == "" or password == "":
             raise BadRequest("Please enter all details")
-        elif create_user(data) == "Password should be at least 8 characters long":
+        elif len(password)<8:
             raise BadRequest("Password should be at least 8 characters long")
-        elif create_user(data)=="Please provide a valid email":
-             raise BadRequest("Please provide a valid email")
+        elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
+                            email):
+            return "Please provide a valid email"
         if User.query.filter_by(email=data.get('email')).first() is not None :
             raise BadRequest("User with that email exists")
         create_user(data)

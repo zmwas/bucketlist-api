@@ -228,6 +228,11 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                       headers=self.headers_auth)
         self.assertEqual(response.status_code,404)
 
+    def test_register_user_endpoint_returns_200(self):
+        data = '{"email":"zack@gmail.com","password":"hunter123"}'
+        response = self.client.post('/auth/register',data=data,
+                                   content_type="application/json")
+        self.assertEqual(response.status_code,200)
 
     def test_register_user_endpoint_with_no_email_returns_400(self):
         data = '{"email":"","password":"hunter123"}'
