@@ -166,7 +166,6 @@ class BucketListItemsResource(Resource):
         return {"message":"BucketList item successfully updated"},200
     @api.header('Authorization', type=str, required=True)
     @token_auth.login_required
-    @api.expect(bucketlistitems)
     def delete(self,id,item_id):
         """
         Delete a  bucketlist item
