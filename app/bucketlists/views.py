@@ -75,8 +75,7 @@ class BucketListResource(Resource):
         """
         data = request.get_json(force = True)
         title = data.get('title')
-        title  = title.strip()
-        if title == None or len(title)==0:
+        if title.strip() == None or len(title.strip())==0:
             raise BadRequest("Please provide a title for your bucketlist")
         bucketlists = BucketList.query.filter_by(user_id=g.user.id,title=title).first()
         if bucketlists is not None:
@@ -135,9 +134,9 @@ class BucketListItemsResource(Resource):
 
         """
         data = request.get_json(force = True)
-        name  = data.get('name').strip()
+        name  = data.get('name')
         item = BucketListItem.query.filter_by(bucketlist_id=id,name=name).first()
-        if name == None or len(name) == 0:
+        if name.strip() == None or len(name.strip()) == 0:
             raise BadRequest("Please provide a name for the item")
         elif get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")

@@ -31,7 +31,7 @@ def verify_password(email, password):
                             email):
             raise Unauthorized("Please provide a valid email")
         else:
-            raise Unauthorized("Wrong email and password combination")    
+            raise Unauthorized("Wrong email and password combination")
         return False
 
     g.user = user
@@ -51,7 +51,7 @@ class RegisterUserResource(Resource):
         data = request.get_json(force = True)
         email = data.get('email')
         password = data.get('password')
-        if email == "" or password == "":
+        if email.strip() == "" or password.strip() == "":
             raise BadRequest("Please enter all details")
         elif len(password)<8:
             raise BadRequest("Password should be at least 8 characters long")
@@ -71,7 +71,5 @@ class LoginUserResource(Resource):
         Log in a user
 
         """
-        # validate emails
-        # validate presence of inputs
         token = g.user.generate_auth_token()
         return jsonify({'Authorization': token.decode('ascii')})
