@@ -66,6 +66,7 @@ class RegisterUserResource(Resource):
 @namespace.route('/login')
 class LoginUserResource(Resource):
     @aut.login_required
+    @api.expect(user)
     def post(self):
         """
         Log in a user
