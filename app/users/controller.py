@@ -4,6 +4,10 @@ from app import db
 
 
 def create_user(data):
+    """
+    Create a user
+
+    """
     email = data.get('email').strip()
     password = data.get('password').strip()
 
