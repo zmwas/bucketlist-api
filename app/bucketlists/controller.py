@@ -12,7 +12,7 @@ def create_bucket_list(user_id,data):
     description = data.get('description')
     if len(title)==0 or title == None:
         return "Please provide a title for your bucketlist"
-    bucketlists = BucketList.query.
+    bucketlists = BucketList.query.\
                                 filter_by(user_id=user_id,title=title).first()
     if bucketlists is not None:
         return "Similar bucketlist title"
