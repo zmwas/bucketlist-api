@@ -25,7 +25,7 @@ def get_bucketlist_by_name(user_id,title):
     Get a bucket list by its name
 
     """
-    bucketlist = BucketList.query.filter_by(user_id=user_id).
+    bucketlist = BucketList.query.filter_by(user_id=user_id).\
                             filter(BucketList.title.ilike('%' + title + '%'))
     if len(bucketlist.all())==0:
         return "Bucketlist doesn't exist"
