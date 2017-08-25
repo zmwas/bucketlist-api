@@ -133,6 +133,10 @@ class BucketListEndpointTestcase(unittest.TestCase):
         self.assertIn('{"message": "Bucketlist doesn\'t exist"}\n',response.data)
 
     def test_delete_single_bucket_list_endpoint(self):
+        """
+        Test that deleting a single bucketLists 
+
+        """
         self.client.post('/bucketlist/',data=self.bucketlist,
                                                 content_type="application/json",
                                                 headers=self.headers_auth)
@@ -155,6 +159,10 @@ class BucketListEndpointTestcase(unittest.TestCase):
         self.assertIn('{"message": "Bucketlist doesn\'t exist"}\n',response.data)
 
     def test_update_single_bucket_list_endpoint(self):
+        """
+        Test that updating a single bucketLists
+
+        """
         self.client.post('/bucketlist/',data=self.bucketlist,
                                         content_type="application/json",
                                         headers=self.headers_auth)
@@ -180,6 +188,9 @@ class BucketListEndpointTestcase(unittest.TestCase):
                          "Bucketlist doesn't exist")
 
     def test_bucket_list_item_creation_endpoint(self):
+        """
+        Test bucket list item creation
+        """
         self.client.post('/bucketlist/',data=self.bucketlist,
                                             content_type="application/json",
                                             headers=self.headers_auth)
@@ -228,10 +239,10 @@ class BucketListEndpointTestcase(unittest.TestCase):
                          "Please provide a name for the item")
 
     def test_item_creation_with_non_existent_bucketlist_id_returns_404(self):
-            """
-            Test that creating a  bucketLists item with a non existent bucketList returns error
+        """
+        Test that creating a  bucketLists item with a non existent bucketList returns error
 
-            """
+        """
         response = self.client.post('/bucketlist/1/items',
                                     data=self.bucket_list_item,
                                     content_type="application/json",
@@ -376,11 +387,11 @@ class BucketListEndpointTestcase(unittest.TestCase):
         Test that user can login and get a token
         """
 
-         response = self.client.post('/auth/login',
-                                         content_type="application/json",
-                                         headers=self.headers_basic)
-         self.assertEqual(200, response.status_code)
-         self.assertTrue(len(json.loads(response.data)["Authorization"])>0)
+        response = self.client.post('/auth/login',
+                                     content_type="application/json",
+                                     headers=self.headers_basic)
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(len(json.loads(response.data)["Authorization"])>0)
 
 
 
