@@ -10,17 +10,15 @@ from controller import create_user
 from models import User
 
 
-aut = HTTPBasicAuth(scheme="user")
+aut = HTTPBasicAuth()
 
 namespace = api.namespace('auth', description='Creation and authentication of users')
 
 @aut.verify_password
-def verify_password(user, password):
-    """Verify if an email and password exist and return the user"""
-    print("\n user", user, password, "\n")
-    user = User.query.filter_by(email=user).first()
+def verify_password(email, password):
+    user = User.query.filter_by(email=email).first()
     if not user or not user.verify_password_hash(password):
-        if not isinstance(user, int):
+        if len(email)==0:
             raise Unauthorized("No email provided")
         elif len(password)==0:
             raise Unauthorized("No password provided")
@@ -35,7 +33,6 @@ def verify_password(user, password):
     return True
 
 
-
 @namespace.route('/register')
 class RegisterUserResource(Resource):
 
@@ -43,7 +40,6 @@ class RegisterUserResource(Resource):
     def post(self):
         """
         Register a user
-
         """
         data = request.get_json(force = True)
         email = data.get('email')
