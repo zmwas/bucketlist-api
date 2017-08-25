@@ -10,20 +10,17 @@ from controller import create_user
 from models import User
 
 
-aut = HTTPBasicAuth()
+aut = HTTPBasicAuth(scheme="user")
 
-
-
-
-namespace = api.namespace('auth',description='Creation and authentication of users')
-
-
+namespace = api.namespace('auth', description='Creation and authentication of users')
 
 @aut.verify_password
-def verify_password(email, password):
-    user = User.query.filter_by(email=email).first()
+def verify_password(user, password):
+    """Verify if an email and password exist and return the user"""
+    print("\n user", user, password, "\n")
+    user = User.query.filter_by(email=user).first()
     if not user or not user.verify_password_hash(password):
-        if len(email)==0:
+        if not isinstance(user, int):
             raise Unauthorized("No email provided")
         elif len(password)==0:
             raise Unauthorized("No password provided")

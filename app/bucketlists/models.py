@@ -3,6 +3,9 @@ from app import db
 
 
 class BucketList(db.Model):
+    """
+    Model for bucket list table
+    """
     __tablename__ = "bucketlists"
 
     id  = db.Column(db.Integer, primary_key=True)
@@ -14,7 +17,9 @@ class BucketList(db.Model):
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
 
 class BucketListItem(db.Model):
-
+    """
+    Model for bucket list item table
+    """
     __tablename__ = "bucketlistitems"
 
     id = db.Column(db.Integer, primary_key=True)

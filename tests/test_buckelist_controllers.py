@@ -15,8 +15,9 @@ from app.users.controller import create_user
 
 
 class BucketListTestCase(unittest.TestCase):
-
+    """ Tests for bucket list controller methods """
     def setUp(self):
+        """Set up variables for tests"""
         self.app = create_app("testing")
         self.app_context = self.app.app_context()
         self.app_context.push()
@@ -30,14 +31,16 @@ class BucketListTestCase(unittest.TestCase):
         db.create_all()
 
     def test_bucket_list_creation(self):
+        """Tests that bucket list is created """
         create_user(self.user)
         user=User.query.first()
         create_bucket_list(1,self.bucket_list)
         queried_bucketlist = BucketList.query.first()
         self.assertIsNotNone(queried_bucketlist)
         self.assertTrue(queried_bucketlist)
-        
+
     def test_bucket_list_creation_with_similar_title(self):
+        """ Tests that bucket list with same title is not created"""
         create_user(self.user)
         create_bucket_list(1,self.bucket_list)
         duplicate = {"title":"Road Trip"}
@@ -46,6 +49,8 @@ class BucketListTestCase(unittest.TestCase):
 
 
     def test_get_single_bucket_list(self):
+        """ Tests that bucket list is fetched"""
+
         create_user(self.user)
         create_bucket_list(1,self.bucket_list)
         single_bucket_list = BucketList.query.get(1)
@@ -53,12 +58,15 @@ class BucketListTestCase(unittest.TestCase):
         self.assertEqual(get_single_bucketlist(1,1),single_bucket_list)
 
     def test_get_single_bucket_list_with_nonexistent_id(self):
+        """ Tests that bucket list with non existent id is not fetched"""
+
         create_user(self.user)
         create_bucket_list(1,self.bucket_list)
 
         self.assertEqual(get_single_bucketlist(2,1),"Bucketlist doesn't exist")
 
     def test_delete_single_bucket_list(self):
+        """ Tests that bucket list is deleted"""
         create_user(self.user)
         create_bucket_list(1,self.bucket_list)
         delete_bucket_list(1,1)
@@ -67,12 +75,14 @@ class BucketListTestCase(unittest.TestCase):
         self.assertEqual(len(all_bucket_lists),0)
 
     def test_delete_non_existent_bucket_list(self):
+        """ Tests that bucket list is not deleted"""
         create_user(self.user)
         create_bucket_list(1,self.bucket_list)
 
         self.assertEqual(delete_bucket_list(2,1),"Bucketlist doesn't exist")
 
     def test_update_bucketlist(self):
+        """ Tests that bucket list is updated"""
         create_user(self.user)
         create_bucket_list(1,self.bucket_list)
         data = {"title":"2017", "description":"Stuff to do in 2017"}
@@ -83,6 +93,7 @@ class BucketListTestCase(unittest.TestCase):
         self.assertEqual(new_bucket_list_title,"2017")
 
     def test_create_bucket_list_item(self):
+        """ Tests that bucket list item is created"""
         create_user(self.user)
         create_bucket_list(1,self.bucket_list)
 
@@ -92,6 +103,7 @@ class BucketListTestCase(unittest.TestCase):
         self.assertTrue(queried_item)
 
     def test_update_bucketlist_item(self):
+        """ Tests that bucket list item is updated"""
         create_user(self.user)
         create_bucket_list(1,self.bucket_list)
         create_bucket_list_item(self.bucket_list_item,1,1)
@@ -102,6 +114,7 @@ class BucketListTestCase(unittest.TestCase):
         self.assertEqual(new_bucket_list_item_name,"Go to Mara")
 
     def test_delete_single_bucket_list_item(self):
+        """ Tests that bucket list item is deleted"""
         create_user(self.user)
         create_bucket_list(1,self.bucket_list)
         create_bucket_list_item(self.bucket_list_item,1,1)

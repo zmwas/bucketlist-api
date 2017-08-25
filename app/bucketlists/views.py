@@ -22,6 +22,7 @@ namespace = api.namespace('bucketlist',description='BucketList operations')
 
 @token_auth.verify_token
 def verify_token(token):
+    #return a user given the token 
     user = User.verify_auth_token(token)
     if not user or type(user)!= User:
         raise Unauthorized("Not Authorized")
