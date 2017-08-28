@@ -58,8 +58,6 @@ class BucketListResource(Resource):
             if get_bucketlist_by_name(g.user.id,bucket_name) == "Bucketlist doesn't exist":
                 raise NotFound("Bucketlist doesn't exist")
             return get_bucketlist_by_name(g.user.id,bucket_name).all()
-        elif args['page'] and args['per_page']:
-            return get_all_bucketlists(g.user.id).paginate(page, per_page, error_out=False).items
         elif args['page'] and args['per_page'] and args['q']:
             return get_bucketlist_by_name(g.user.id,bucket_name).paginate(page, per_page, error_out=False).items
 
