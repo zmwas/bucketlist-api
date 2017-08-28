@@ -22,7 +22,7 @@ namespace = api.namespace('bucketlist',description='BucketList operations')
 
 @token_auth.verify_token
 def verify_token(token):
-    #return a user given the token 
+    #return a user given the token
     user = User.verify_auth_token(token)
     if not user or type(user)!= User:
         raise Unauthorized("Not Authorized")
@@ -63,7 +63,7 @@ class BucketListResource(Resource):
         elif args['page'] and args['per_page'] and args['q']:
             return get_bucketlist_by_name(g.user.id,bucket_name).paginate(page, per_page, error_out=False).items
 
-        return  get_all_bucketlists(g.user.id).paginate(page, per_page, error_out=False).items
+        return  get_all_bucketlists(g.user.id).all()
 
 
     @api.header('Authorization', type=str, required=True)
