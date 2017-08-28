@@ -63,7 +63,7 @@ class BucketListResource(Resource):
         elif args['page'] and args['per_page'] and args['q']:
             return get_bucketlist_by_name(g.user.id,bucket_name).paginate(page, per_page, error_out=False).items
 
-        return  get_all_bucketlists(g.user.id).all()
+        return  get_all_bucketlists(g.user.id)
 
 
     @api.header('Authorization', type=str, required=True)
