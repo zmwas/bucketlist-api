@@ -1,12 +1,12 @@
 import math
-from flask import g,request
+from flask import g,request,jsonify
 from flask_httpauth import HTTPTokenAuth
 from werkzeug.exceptions import NotFound,Unauthorized,BadRequest
 from flask_restplus import Resource
 from flask_restplus import reqparse
 
 from app.utils import api
-from serializers import bucketlist,bucketlistitems,response
+from serializers import bucketlist,bucketlistitems,response,output,output_item
 from controller import (create_bucket_list,get_all_bucketlists,
                        get_single_bucketlist,delete_bucket_list,
                        get_single_bucketlist_item,get_bucketlist_by_name,
@@ -89,6 +89,7 @@ class BucketListResource(Resource):
 
     @api.header('Authorization', type=str, required=True)
     @api.expect(bucketlist)
+    @api.marshal_with(output)
     @token_auth.login_required
     def post(self):
         """
@@ -103,7 +104,8 @@ class BucketListResource(Resource):
         if bucketlists is not None:
             raise BadRequest("A bucketlist with that name exists")
         create_bucket_list(g.user.id,data)
-        return {"message":"BucketList successfully created"}, 201
+        result = BucketList.query.filter_by(user_id=g.user.id).order_by(BucketList.id.desc()).first()
+        return {'status':'BucketList successfully created', 'data': result}
 
 
 @namespace.route('/<int:id>')
@@ -137,6 +139,7 @@ class SingleBucketListResource(Resource):
     @api.header('Authorization', type=str, required=True)
     @token_auth.login_required
     @api.expect(bucketlist)
+    @api.marshal_with(output)
     def put(self,id):
         """
         Update a single bucketlist
@@ -145,8 +148,13 @@ class SingleBucketListResource(Resource):
         if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
         data = request.get_json(force = True)
+        title = data.get('title')
+        bucketlists = BucketList.query.filter_by(user_id=g.user.id, title=title).first()
+        if bucketlists is not None:
+            raise BadRequest("A bucketlist with that name exists")
         update_bucket_list(id,g.user.id,data)
-        return {"message":"BucketList successfully updated"},200
+        result = BucketList.query.filter_by(id=id,user_id=g.user.id).first()
+        return {"status":"BucketList successfully updated","data":result},200
 
 @namespace.route('/<int:id>/items')
 class BucketListItemsResource(Resource):
@@ -154,6 +162,7 @@ class BucketListItemsResource(Resource):
     @api.header('Authorization', type=str, required=True)
     @token_auth.login_required
     @api.expect(bucketlistitems)
+    @api.marshal_with(output_item)
     def post(self,id):
         """
         Create a  bucketlist item
@@ -169,7 +178,8 @@ class BucketListItemsResource(Resource):
         elif item is not None:
             raise BadRequest("Item with that name exists")
         create_bucket_list_item(data,id,g.user.id)
-        return {"message":"BucketList item successfully created"},201
+        result = BucketListItem.query.filter_by(bucketlist_id=id).order_by(BucketListItem.id.desc()).first()
+        return {'status':'BucketList item successfully created','data':result},201
 
 
 @namespace.route('/<int:id>/items/<int:item_id>')
@@ -178,6 +188,7 @@ class BucketListItemsResource(Resource):
     @api.header('Authorization', type=str, required=True)
     @token_auth.login_required
     @api.expect(bucketlistitems)
+    @api.marshal_with(output_item)
     def put(self,id,item_id):
         """
         Update a  bucketlist item
@@ -185,13 +196,17 @@ class BucketListItemsResource(Resource):
         """
 
         data = request.get_json(force = True)
+        name = data.get('name')
+        item = BucketListItem.query.filter_by(bucketlist_id=id, name=name).first()
         if get_single_bucketlist(id,g.user.id) == "Bucketlist doesn't exist":
             raise NotFound("Bucketlist doesn't exist")
         elif get_single_bucketlist_item(id,item_id) == "Item doesn't exist":
             raise NotFound("Item does not exist")
+        elif item is not None:
+            raise BadRequest("Item with that name exists")
         update_bucket_list_item(id,item_id,data)
-        return {"message":"BucketList item successfully updated"},200
-
+        result = BucketListItem.query.filter_by(bucketlist_id=id,id=item_id).first()
+        return {'status': 'BucketList item successfully updated', 'data': result}, 200
     @api.header('Authorization', type=str, required=True)
     @token_auth.login_required
     def delete(self,id,item_id):

@@ -27,3 +27,11 @@ response = api.model('Response',{
     'pages':fields.Integer(),
     'data': fields.List(fields.Nested(bucketlist))
 })
+output = api.model('Response',{
+    'status':fields.String(),
+    'data': fields.Nested(bucketlist)
+})
+output_item = api.model('Response',{
+    'status':fields.String(),
+    'data': fields.Nested(bucketlistitems)
+})
