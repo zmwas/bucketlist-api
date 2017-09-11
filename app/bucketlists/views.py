@@ -1,11 +1,12 @@
-from flask import g,request,make_response,jsonify
+import math
+from flask import g,request
 from flask_httpauth import HTTPTokenAuth
 from werkzeug.exceptions import NotFound,Unauthorized,BadRequest
 from flask_restplus import Resource
 from flask_restplus import reqparse
 
 from app.utils import api
-from serializers import bucketlist,bucketlistitems,bucket
+from serializers import bucketlist,bucketlistitems,response
 from controller import (create_bucket_list,get_all_bucketlists,
                        get_single_bucketlist,delete_bucket_list,
                        get_single_bucketlist_item,get_bucketlist_by_name,
@@ -35,7 +36,7 @@ def verify_token(token):
 @namespace.route('/')
 class BucketListResource(Resource):
     @api.header('Authorization', type=str, required=True)
-    @api.marshal_list_with(bucketlist)
+    @api.marshal_list_with(response)
     @token_auth.login_required
     def get(self):
         """
@@ -57,13 +58,33 @@ class BucketListResource(Resource):
             bucket_name = args.get('q')
             if get_bucketlist_by_name(g.user.id,bucket_name) == "Bucketlist doesn't exist":
                 raise NotFound("Bucketlist doesn't exist")
-            return get_bucketlist_by_name(g.user.id,bucket_name).all()
+            total = float(get_bucketlist_by_name(g.user.id,bucket_name).count())
+            pages = math.ceil(total/10)
+            results = get_bucketlist_by_name(g.user.id,bucket_name).all()
+            return {'status':'success',
+                    'pages':pages,
+                    'data':results
+                    }
         elif args['page'] and args['per_page']:
-            return get_all_bucketlists(g.user.id).paginate(page, per_page, error_out=False).items
+            total = float(get_all_bucketlists(g.user.id).count())
+            pages=math.ceil(total/10)
+            results = get_all_bucketlists(g.user.id).paginate(page, per_page, error_out=False).items
+            return {'status': 'success',
+                    'pages': pages,
+                    'data': results
+                    }
         elif args['page'] and args['per_page'] and args['q']:
-            return get_bucketlist_by_name(g.user.id,bucket_name).paginate(page, per_page, error_out=False).items
+            bucket_name = args.get('q')
+            total = float(get_bucketlist_by_name(g.user.id, bucket_name).count())
+            pages = math.ceil(total / 10)
+            results = get_bucketlist_by_name(g.user.id,bucket_name).paginate(page, per_page, error_out=False).items
+            return {'status': 'success',
+                    'pages': pages,
+                    'data': results
+                    }
 
-        return  get_all_bucketlists(g.user.id).all()
+
+        return get_all_bucketlists(g.user.id).all()
 
 
     @api.header('Authorization', type=str, required=True)
