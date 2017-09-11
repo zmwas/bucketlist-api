@@ -21,3 +21,17 @@ bucketlist = api.model('Bucket List', {
     'description':fields.String(required=False,description='A short snippet describing the bucketlist'),
     'bucketlistitems': fields.List(fields.Nested(bucketlistitems)),
 })
+
+response = api.model('Response',{
+    'status':fields.String(),
+    'pages':fields.Integer(),
+    'data': fields.List(fields.Nested(bucketlist))
+})
+output = api.model('Response',{
+    'status':fields.String(),
+    'data': fields.Nested(bucketlist)
+})
+output_item = api.model('Response',{
+    'status':fields.String(),
+    'data': fields.Nested(bucketlistitems)
+})

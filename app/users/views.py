@@ -14,6 +14,7 @@ aut = HTTPBasicAuth()
 
 namespace = api.namespace('auth', description='Creation and authentication of users')
 
+
 @aut.verify_password
 def verify_password(email, password):
     user = User.query.filter_by(email=email).first()
