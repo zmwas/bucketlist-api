@@ -105,7 +105,7 @@ class BucketListResource(Resource):
             raise BadRequest("A bucketlist with that name exists")
         create_bucket_list(g.user.id,data)
         result = BucketList.query.filter_by(user_id=g.user.id).order_by(BucketList.id.desc()).first()
-        return {'status':'BucketList successfully created', 'data': result}
+        return {'status':'BucketList successfully created', 'data': result},201
 
 
 @namespace.route('/<int:id>')

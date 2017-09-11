@@ -8,7 +8,7 @@ from config import app_config
 class BucketListEndpointTestcase(unittest.TestCase):
     """Tests for  BucketList Endpoints."""
     def setUp(self):
-        """Set up variables for tests"""
+        """ Set up variables for tests """
         self.app = create_app("testing")
         self.app_context = self.app.app_context()
         self.app_context.push()
@@ -26,6 +26,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
         self.login_response = self.client.post('auth/login',
                                                content_type="application/json",
                                                headers=self.headers_basic)
+
         self.login_response_json = json.loads(self.login_response.data
                                               .decode('utf-8'))
         self.token = self.login_response_json["Authorization"]
@@ -39,7 +40,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                         headers=self.headers_auth
                                         )
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(json.loads(response.data)["message"],
+        self.assertEqual(json.loads(response.data)["status"],
                          "BucketList successfully created")
 
 
@@ -76,7 +77,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
         response = self.client.get('/bucketlist/?page=1&per_page=10',
                                    headers=self.headers_auth)
         self.assertEqual(response.status_code,200)
-        self.assertEqual(len(json.loads(response.data)),1)
+        self.assertEqual(len(json.loads(response.data)["data"]),1)
 
 
     def test_bucketlist_search_with_right_term_returns_200(self):
@@ -87,7 +88,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
         response = self.client.get('/bucketlist/?q=201&page=1&per_page=10',
                                    headers=self.headers_auth)
         self.assertEqual(response.status_code,200)
-        self.assertEqual(len(json.loads(response.data)),1)
+        self.assertEqual(len(json.loads(response.data)["data"]),1)
 
     def test_bucketlist_search_with_wrong_term_returns_404(self):
         """
@@ -111,7 +112,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                                 headers=self.headers_auth)
         response = self.client.get('/bucketlist/',headers=self.headers_auth)
         self.assertEqual(response.status_code,200)
-        self.assertEqual(len(json.loads(response.data)),1)
+        self.assertEqual(len(json.loads(response.data)["data"]),1)
 
 
 
@@ -134,7 +135,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
 
     def test_delete_single_bucket_list_endpoint(self):
         """
-        Test that deleting a single bucketLists 
+        Test that deleting a single bucketLists
 
         """
         self.client.post('/bucketlist/',data=self.bucketlist,
@@ -171,7 +172,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                                 content_type="application/json",
                                                 headers=self.headers_auth)
         self.assertEqual(response.status_code,200)
-        self.assertEqual(json.loads(response.data)["message"],
+        self.assertEqual(json.loads(response.data)["status"],
                          "BucketList successfully updated")
 
     def test_update_non_existent_bucket_list_endpoint(self):
@@ -199,7 +200,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                     content_type="application/json",
                                     headers=self.headers_auth)
         self.assertEqual(response.status_code,201)
-        self.assertEqual(json.loads(response.data)["message"],
+        self.assertEqual(json.loads(response.data)["status"],
                          "BucketList item successfully created")
     def test_bucket_list_item_creation_endpoint_with_similar_name_returns_400(self):
         """
@@ -268,7 +269,7 @@ class BucketListEndpointTestcase(unittest.TestCase):
                                     content_type="application/json",
                                     headers=self.headers_auth)
         self.assertEqual(response.status_code,200)
-        self.assertEqual(json.loads(response.data)["message"],
+        self.assertEqual(json.loads(response.data)["status"],
                          "BucketList item successfully updated")
 
     def test_update_item_with_non_existent_bucketlist_item_id_returns_404(self):
@@ -386,19 +387,11 @@ class BucketListEndpointTestcase(unittest.TestCase):
         """
         Test that user can login and get a token
         """
-
         response = self.client.post('/auth/login',
                                      content_type="application/json",
                                      headers=self.headers_basic)
         self.assertEqual(200, response.status_code)
         self.assertTrue(len(json.loads(response.data)["Authorization"])>0)
-
-
-
-
-
-
-
 
 
     def tearDown(self):
